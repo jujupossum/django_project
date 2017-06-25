@@ -1,0 +1,18 @@
+<!--profile page for admin-->
+{% extends "base.html" %}
+
+{% block sidebar %}
+
+<div id='sidebar' class="panel-body">
+    <ul>{% load static %}
+        <li><a href="/manager/class_list"><img src="/static/images/users.png"/>Classes</a></li><br>
+        <li><a href="/manager/student_list">{% load static %} <img src="{% static "img/list.png" %}" alt="Hi!" width='40' height='40'style='text-center'/>Students</a></li>
+        <li><a href="/manager/classroom_list">Classroom</a></li>
+        <li><a href="/manager/member_list">Members</a></li>
+        <li><a href="/manager/user_list">Users</a></li>
+        <li><a href="/manager/class_list">Settings</a></li>
+    </ul>
+</div>
+{% endblock %}
+
+

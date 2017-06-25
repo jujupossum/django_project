@@ -1,0 +1,31 @@
+{% extends "profile.html" %}
+
+{% block content%}
+     <div class='container-fluid'>
+        
+            <table>
+            <tr>
+                <th>name</th>
+                <th>course</th>
+                <th>age</th>
+                <th>phone</th>
+                <th>email</th>
+              </tr>
+                {% for student in object_list %}
+              <tr>
+                <td><a href="/manager/student_detail/{{student.id}}">{{ student.name }}</a></td>
+                <td><a href="/manager/student_detail/{{student.id}}">{{ student.course }}</a></td>
+                <td><a href="/manager/student_detail/{{student.id}}">{{ student.age }}</a></td>
+                <td><a href="/manager/student_detail/{{student.id}}">{{ student.phone }}</a></td>
+                <td><a href="/manager/student_detail/{{student.id}}">{{ student.email }}</a></td>
+              </tr>
+                {% endfor %}
+            </table>
+    <br>
+    <div>
+        <button type="submit" class="btn btn-success" onclick="location.href='/manager/create_student/'">Add a student</button>
+    </div>   
+    </div>
+    
+    
+{% endblock %}

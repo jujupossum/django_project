@@ -1,0 +1,30 @@
+{% extends "profilebase.html" %}
+
+{% block content%}
+    <div class='container-fluid'>
+            
+            <div class="panel-body">
+                <h2>Class Description</h2>
+                <h3>{{ course.name }}</h3>
+                <p>{{ course.description }}</p>
+            </div>
+            
+            <div class="panel-body">
+                <h2>Capacity</h2>
+                {% var count = 0 
+                for client in class
+                    count++
+                    endfor
+                %}
+            <p>{% count %} / {class.capacity}</p>                
+            </div>
+            
+            
+            <div class="panel-body">
+                <h2>Choose student to enroll</h2>
+                {% for student in students %}
+                <p> <a href='/portal/checkout/{{course.id}}/{{student.id}}'> {{ student.name }} </a></p>
+                {% endfor %}
+            </div>
+    </div>
+{% endblock %}

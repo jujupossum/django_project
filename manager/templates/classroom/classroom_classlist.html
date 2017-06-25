@@ -1,0 +1,61 @@
+{% extends "profile.html" %}
+
+{% block content%}
+
+            <div class='text-center floating-box'> 
+              <h4>Monday</h4>
+              {% for class in course %}
+                {% if class.lundi == True %}
+                <div class="panel panel-default panel-body"><a href="/manager/class_detail/{{class.id}}">{{ class.name }}</a> <br> {{ class.start_time }}H - {{ class.end_time }}H <br></div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <div class='text-center floating-box'> 
+              <h4>Tuesday</h4>
+              {% for class in course %}
+                {% if class.mardi == True %}
+                <div class="panel panel-default panel-body"><a href="/manager/class_detail/{{class.id}}">{{ class.name }}</a> <br> {{ class.start_time }}H - {{ class.end_time }}H <br></div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <div class='text-center floating-box'>
+              <h4>Wednesday</h4>
+              {% for class in course %}
+                {% if class.mercredi == True %}
+                <div class="panel panel-default panel-body"><a href="/manager/class_detail/{{class.id}}">{{ class.name }}</a> <br> {{ class.start_time }}H - {{ class.end_time }}H <br></div>                {% endif %}
+                {% endfor %}
+            </div>
+            <div class='text-center floating-box'> 
+              <h4>Thursday</h4>
+              {% for class in course %}
+                {% if class.jeudi == True %}
+<div class="panel panel-default panel-body"><a href="/manager/class_detail/{{class.id}}">{{ class.name }}</a> <br> {{ class.start_time }}H - {{ class.end_time }}H <br></div>                {% endif %}
+                {% endfor %}
+            </div>
+            <div class='text-center floating-box'>
+              <h4>Friday</h4>
+              {% for class in course %}
+                {% if class.vendredi == True %}
+                <div class="panel panel-default panel-body"><a href="/manager/class_detail/{{class.id}}">{{ class.name }}</a> <br> {{ class.start_time }}H - {{ class.end_time }}H <br></div>                {% endif %}
+                {% endfor %}
+            </div>
+            <div class='text-center floating-box'>
+              <h4>Saturday</h4>
+              {% for class in course %}
+                {% if class.samedi == True %}
+                <div class="panel panel-default panel-body"><a href="/manager/class_detail/{{class.id}}">{{ class.name }}</a> <br> {{ class.start_time }}H - {{ class.end_time }}H <br></div>                {% endif %}
+                {% endfor %}
+            </div>
+            <div class='text-center floating-box'>
+              <h4>Sunday</h4>
+              {% for class in course %}
+                {% if class.dimanche == True %}
+                <div class="panel panel-default panel-body"><a href="/manager/class_detail/{{class.id}}">{{ class.name }}</a> <br> {{ class.start_time }}H - {{ class.end_time }}H <br></div>                {% endif %}
+                {% endfor %}
+            </div>
+        <br>
+        <div>
+             <button type="submit" class="btn btn-success" onclick="location.href='/manager/create_class/'">Create a class </button>
+        </div>
+        
+{% endblock %}

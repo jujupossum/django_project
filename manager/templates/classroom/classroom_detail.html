@@ -1,0 +1,10 @@
+
+{% extends "profile.html" %}
+
+{% block content%}
+    <h1>{{ classroom.name }}</h1>
+    <p>{{ classroom.location }}</p>
+    
+    <p>classes</p>
+   <a href="/manager/classroom_classlist/{{classroom.id}}">classes</a>
+{% endblock %}

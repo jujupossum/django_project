@@ -1,0 +1,35 @@
+{% extends "profile.html" %}
+
+{% block content%}
+
+    <div class='container-fluid'>
+        
+            <table>
+            <tr>
+                <th>Name</th>
+                <th>Classroom</th>
+                <th>Teacher</th>
+                <th>Day</th>
+                <th>Capacity</th>
+            
+              </tr>
+                {% for class in object_list %}
+              <tr>
+                <td><a href="/manager/class_detail/{{class.id}}">{{ class.name }}</a></td>
+                <td><a href="/manager/class_detail/{{class.id}}">{{ class.class_room }}</a></td>
+                <td><a href="/manager/class_detail/{{class.id}}">{{ class.teacher }}</a></td>
+                <td><a href="/manager/class_detail/{{class.id}}">{{ class.day }}</a></td>
+                <td><a href="/manager/class_detail/{{class.id}}">{{ class.capacity }}</a></td>
+              </tr>
+                {% endfor %}
+            </table>
+            
+        <br>
+        <div>
+             <button type="submit" class="btn btn-success" onclick="location.href='/manager/create_class/'">Create a class </button>
+        </div>
+        
+    </div>
+{% endblock %}
+
+

@@ -1,0 +1,16 @@
+{% extends "profilebase.html" %}
+
+{% block content%}
+    <div class='container-fluid'>
+        {% for class in object_list %}
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3><a href="/portal/class_detail/{{class.id}}">{{ class.name }}</a></h3>
+                    <p>{{ class.description }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+

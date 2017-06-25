@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    <div class="container p-none">
+        <div class="lgn-container col-lg-8">
+            {% if error_message %}
+                <p><strong>{{ error_message }}</strong></p>
+            {% endif %}
+            <form id="login-form" method="post" action="{% url 'login_staff' %}">
+                {% csrf_token %}
+                <div>
+                    <div>
+                        <label for="id_username">Username</label><br>
+                        <input id="id_username" name="username" type="text">
+                    </div>
+                    <div>
+                        <label for="id_password">Password</label><br>
+                        <input id="id_password" name="password" type="password">
+                    </div>
+                    <br>
+                    <div>
+                        <input type="submit" value="Login" class="btn btn-primary"/>
+                        <input type="hidden" name="next" value="{{ next }}"/>
+                    </div>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+{% endblock content %}

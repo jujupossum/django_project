@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content%}
+    <div>
+        <ul>
+            {% for user in object_list %}     
+                <li> {{ user.username }} </li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <div>
+        <a href='/manager/create_user/'> Create a new user</a>
+    </div>
+{% endblock %}

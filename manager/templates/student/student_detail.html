@@ -1,0 +1,8 @@
+{% extends "profile.html" %}
+
+{% block content%}
+    <h1>{{ student.name }}</h1>
+    <p>{{ student.class }}</p>
+    
+    <button type="submit" class="btn btn-success" onclick="location.href='/manager/delete_student/{{student.id}}'">Delete student</button>
+{% endblock %}

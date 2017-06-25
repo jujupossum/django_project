@@ -1,0 +1,13 @@
+<!--profile page for customers-->
+{% extends 'profilebase.html'%}
+{% block content %}
+
+    <h2>Customer profile page</h2><br>
+    <h3>Logged in as {{ user.username }}</h3>
+    <h3>Register student</h3>
+    <h3><a href="/portal/create_student/">reg</a></h3>
+    
+    <h3>List of available classes</h3>
+    <h3><a href="/portal/class_list">Classes</a></h3>
+{% endblock %}
+
