@@ -1,20 +1,31 @@
 {% extends 'profilebase.html'%}
 
-
 {% block content %}
-<div>
-{{ student.name }}<br>
-{{ student.age }}<br>
-{{ student.phone }}<br>
-{{ student.gender }}<br>
-{{ student.email }}<br>
+<div class="panel panel-default">
+ <div class="panel-body">
+  <h3>Student Information</h3>
+  Name: {{ student.name }}<br>
+  Age: {{ student.age }}<br>
+  Phone Number: {{ student.phone }}<br>
+  Email: {{ student.email }}<br>
+ </div>
 </div>
+<div class="panel panel-default">
+ <div class="panel-body">
+  <h3>Course Information</h3>
+  Name: {{ course.name }}<br>
+  Cost: {{ course.price }} $<br>
+  Capacity: {{ course.capacity }}<br>
+ </div>
+</div>
+
+
  <form action='' method="POST">{% csrf_token %}
   <script
     src="https://checkout.stripe.com/checkout.js" class="stripe-button"
     data-key="pk_test_G01djmU2D5jvXvCJHmFFKlkE"
-    data-amount="1500"
-    data-name="Class Description"
+    data-amount="{{course.price}}"
+    data-name="{{course.name}}"
     data-label="Payment"
     data-description="Widget"
     data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
@@ -22,4 +33,5 @@
     data-currency="cad">
   </script>
 </form>
+
 {% endblock %}

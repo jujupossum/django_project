@@ -1,0 +1,25 @@
+{% extends 'profilebase.html' %}
+
+{% block content %}
+<div class='container-fluid'>
+ <div class="row">
+    <h2>Class History</h2> <br>    
+ <table>
+    <tr class='table-title-green'>
+      <th>Name</th>
+      <th>Organisation</th>
+      <th>Schedule</th>
+      <th>Purchase Date</th>
+    </tr>
+    {% for class in classes %}
+    <tr>
+      <td>{{ class.name }}</a></td>
+      <td>{{ class.organisation_name }}</td>
+      <td>{{ class.start_date }} - {{ class.end_date }}</td>
+      <td>{{ class.registered_date }}</td>
+      
+    </tr>
+    {% endfor %}
+    </table>
+ </div>       
+{% endblock %}

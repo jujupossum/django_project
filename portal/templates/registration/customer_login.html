@@ -1,34 +1,26 @@
 {% extends 'profilebase.html' %}
 
 {% block content %}
-    <div id="content-container" class="container p-none">
-        <div class="lgn-container col-lg-8">
-            <form id="login-form" method="post" 
-                  action="{% url 'customer_login' %}">
-                {% csrf_token %}
-                <table class="table">
-                    <tr>
-                        <td><label for="id_username">Username</label></td>
-                        <td><input id="id_username" name="username" 
-                                   type="text" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="id_password">Password</label></td>
-                        <td><input id="id_password" name="password" 
-                                   type="password" class="form-control"></td>
-                    </tr>
-                </table>
-                {% if form.errors %}
-                    <p class=" label label-danger">
-                        Your username and password didn't match. 
-                        Please try again.
-                    </p>
-                {% endif %}
+    
+{{ state }}
 
-                <input type="submit" value="Login" 
-                       class="btn btn-primary pull-right" />
-                <input type="hidden" name="next" value="{{ next }}" />
-            </form>
-        </div>
-    </div>
+{% if next %}
+<form action="/portal/customer_login/?next={{next}}" method="post" >
+{%else%}
+<form action="/portal/customer_login/" method="post">
+{% endif %}
+    {% csrf_token %}
+    username:
+    <input type="text" name="username" value="{{ username }}" /><br />
+    password:
+    <input type="password" name="password" value="" /><br />
+    <input type="submit" value="Log In"/>
+</form>
+
+{% if next %}
+<a href='/portal/register/?next={{next}}'> Dont have an account yet? </a>
+{% else %}
+<a href='/portal/register/'> Dont have an account yet? </a>
+{% endif %}
+
 {% endblock content %}

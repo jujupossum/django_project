@@ -1,0 +1,65 @@
+{% extends 'profilebase.html' %}
+
+{% block content %}
+
+<div class="albums-container container-fluid content">
+
+    <div class="row">
+        <div class="col-sm-12 col-md-12  ui-widget">
+            <h3>Class search</h3>
+            <br>
+        </div>
+        <form action="/portal/class_search/" method="get">
+        <div class="col-sm-4 col-md-4  ui-widget">
+            <input id="text"  class="form-control" name="text" placeholder="Enter a class name" >
+        </div>
+        <div class="col-sm-4 col-md-4 ui-widget">
+            <input id="city"  class="form-control" name='city' type="text" size="50" placeholder="Enter a location" value='{{city}}' autocomplete="on">
+        </div>
+        <br>
+        <input type="submit" class="btn btn-success"  value="Filter">
+        </form>
+    </div>
+    <br>
+    <hr>
+        
+	<div class="row">
+        {% for class in classes %}
+		<div class="col-sm-6 col-md-4">
+			<div class="card">
+			   <a href="/portal/{{ class.organisation_name }}/class_detail/{{class.id}}">
+                <img class="card-img-top" src="http://res.cloudinary.com/doeaevze5/image/upload/w_300,h_300,c_fill,f_auto/{{ class.image}}.jpg" alt="Card image cap">
+                <div class="card-block">
+                    <h3 class="card-title">{{class.name}}</h3>
+                    <h5 class="card-subtitle mb-2 text-muted">{{class.start_date}} - {{class.end_date}}</h5>
+                    <p class="card-text">{{class.description|truncatechars:120}}</p>
+                </div>
+                </a>
+            </div>
+            {% cycle '' '' '' '' '' '<div class="clearfix visible-lg"></div>' %}
+        </div>
+        {% endfor %}
+    </div><!-- /.row-->
+
+    
+    <div class="pagination ">
+        <span class="step-links">
+        {% if classes.has_previous %}
+            <a href="?text={{text}}&city={{city}}&page={{ classes.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ classes.number }} of {{ classes.paginator.num_pages }}
+        </span>
+
+        {% if classes.has_next %}
+            <a href="?text={{text}}&city={{city}}&page={{ classes.next_page_number }}">Next</a>
+        {% endif %}
+        </span>
+    </div>
+    
+</div>
+
+{% endblock %}
+
+    

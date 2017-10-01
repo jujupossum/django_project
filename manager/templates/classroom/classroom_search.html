@@ -1,0 +1,62 @@
+{% extends 'profile.html' %}
+
+
+{% block content %}
+
+<div class=" container-fluid content">
+
+    <div class="row">
+    <div class="col-sm-12 col-md-12  ui-widget">
+    <h3>Find a classroom</h3>
+    </div>
+    <form action="/manager/classroom_search/" method="get">
+    <div class="col-sm-4 col-md-4  ui-widget">
+      <input id="text"  class="form-control" name="text">
+    </div>
+    <div class="col-sm-2 col-md-2 ui-widget">
+      <select name="city" class="form-control" id="city">
+         <option disabled>----- CA -------</option><option value="Montreal">Montreal</option><option value="Toronto">Toronto</option><option value="Vancouver">Vancouver</option>
+         <option disabled>----- US -------</option><option value="New York">New York</option><option value="Chicago">Chicago</option>
+      </select>
+    </div>
+    <br>
+    <input type="submit" class="btn btn-success"  value="Search">
+  </form>
+  </div>
+    <hr>
+    <!-- Classes -->
+    <div class="row">
+            {% for classroom in classrooms %}
+                <div class="col-sm-4 col-lg-4">
+                    <div class="thumbnail">
+                        <a href="/manager/{{ classroom.user }}/classroom_detail/{{classroom.id}}">
+                             {% load cloudinary %}      
+                             {% cloudinary classroom.image format="jpg" width=1250 height=1250 crop="fill" %}
+                        </a>
+                        <div class="caption">
+                            <h3>{{ classroom.name|title }}</h3>
+                            <!-- View Details -->
+                            <a href="/manager/{{ classroom.user }}/classroom_detail/{{classroom.id}}" class="btn btn-primary btn-sm" role="button">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                {% cycle '' '' '' '' '' '<div class="clearfix visible-lg"></div>' %}
+            {% endfor %}
+    </div>
+             <div class="pagination ">
+                <span class="step-links">
+                {% if classrooms.has_previous %}
+                    <a href="?text={{text}}&city={{city}}&page={{ classrooms.previous_page_number }}">Previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ classrooms.number }} of {{ classrooms.paginator.num_pages }}
+                </span>
+
+                {% if classrooms.has_next %}
+                    <a href="?text={{text}}&city={{city}}&page={{ classrooms.next_page_number }}">Next</a>
+                {% endif %}
+                </span>
+            </div>
+</div>
+{% endblock %}

@@ -1,31 +1,50 @@
 {% extends "profile.html" %}
 
 {% block content%}
-     <div class='container-fluid'>
-        
-            <table>
-            <tr>
-                <th>name</th>
-                <th>course</th>
-                <th>age</th>
-                <th>phone</th>
-                <th>email</th>
-              </tr>
-                {% for student in object_list %}
-              <tr>
-                <td><a href="/manager/student_detail/{{student.id}}">{{ student.name }}</a></td>
-                <td><a href="/manager/student_detail/{{student.id}}">{{ student.course }}</a></td>
-                <td><a href="/manager/student_detail/{{student.id}}">{{ student.age }}</a></td>
-                <td><a href="/manager/student_detail/{{student.id}}">{{ student.phone }}</a></td>
-                <td><a href="/manager/student_detail/{{student.id}}">{{ student.email }}</a></td>
-              </tr>
-                {% endfor %}
-            </table>
+
+<div class='container-fluid'>
+  <div class="row">
+    <div class="col-sm-12 col-md-12  ui-widget">
+      <h4>Filter</h4>
+    </div>
+    <form action="/manager/student_list/" method="get">
+    <div class="col-sm-4 col-md-4  ui-widget">
+      <input id="name"  class="form-control" name="name" placeholder="Name" >
+    </div>
+    <div class="col-sm-4 col-md-4 ui-widget">
+      <input id="course"  class="form-control" name='course' type="text" size="50" placeholder="Class">
+    </div>
+    <br>
+    <input type="submit" class="btn btn-primary"  value="Filter">
+    </form>
+  </div>
+  <br>
+  <hr>
+  <div>
+    <table>
+      <tr class='table-title-orange'>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Class</th>
+      </tr>
+      {% for student in students %}
+        <tr>
+          <td><a href="/manager/student_detail/{{student.id}}">{{ student.name }}</a></td>
+          <td><a href="/manager/student_detail/{{student.id}}">{{ student.age }}</a></td>
+          <td><a href="/manager/student_detail/{{student.id}}">{{ student.phone }}</a></td>
+          <td><a href="/manager/student_detail/{{student.id}}">{{ student.email }}</a></td>
+          <td><a href="/manager/student_detail/{{student.id}}">{{ student.course }}</a></td>
+        </tr>
+      {% endfor %}
+    </table>
     <br>
     <div>
-        <button type="submit" class="btn btn-success" onclick="location.href='/manager/create_student/'">Add a student</button>
+        <button type="submit" class="btn btn-primary" onclick="location.href='/manager/create_student/'">Add a student</button>
+        <button type="submit" class="btn btn-default" onclick="location.href='/manager/export/?name={{name}}&course={{course}}'">Export student list</button>
     </div>   
-    </div>
-    
+  </div>
+</div>  
     
 {% endblock %}

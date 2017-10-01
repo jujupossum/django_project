@@ -1,5 +1,6 @@
 from django.contrib import admin
-from manager.models import ClassRoom, Client, Class, ClientProfile
+from manager.models import Client, Class, ClientProfile, StripeInfo, ClassHistory
+
 
 class CLAdmin(admin.ModelAdmin):
     list_display = ('name', )
@@ -15,9 +16,15 @@ class ClassAdmin(admin.ModelAdmin):
     
 class ClientProfileAdmin(admin.ModelAdmin):
     list_display = ('name',)
-    
 
-admin.site.register(ClassRoom, CLAdmin)
+class ClassHistoryAdmin(admin.ModelAdmin):
+    list_display =('name',)
+    
+class StripeInfoAdmin(admin.ModelAdmin):
+    list_display = ('key',)
+    
 admin.site.register(Client, CAdmin)
 admin.site.register(Class, ClassAdmin)
 admin.site.register(ClientProfile, ClientProfileAdmin)
+admin.site.register(StripeInfo, StripeInfoAdmin)
+admin.site.register(ClassHistory, ClassHistoryAdmin)

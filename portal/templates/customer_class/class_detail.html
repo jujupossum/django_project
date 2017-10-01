@@ -2,29 +2,56 @@
 
 {% block content%}
     <div class='container-fluid'>
-            
-            <div class="panel-body">
-                <h2>Class Description</h2>
-                <h3>{{ course.name }}</h3>
-                <p>{{ course.description }}</p>
+        <div class='row'>
+            <div class="col-sm-8 col-lg-8 ">
+                <h3>{{course.name|title }}</h3>
             </div>
-            
-            <div class="panel-body">
-                <h2>Capacity</h2>
-                {% var count = 0 
-                for client in class
-                    count++
-                    endfor
-                %}
-            <p>{% count %} / {class.capacity}</p>                
-            </div>
-            
-            
-            <div class="panel-body">
-                <h2>Choose student to enroll</h2>
-                {% for student in students %}
-                <p> <a href='/portal/checkout/{{course.id}}/{{student.id}}'> {{ student.name }} </a></p>
-                {% endfor %}
-            </div>
-    </div>
+             <div class="col-sm-4 col-lg-4">
+                {% if course.client_set.count < course.capacity %}
+                    <h4>{{ course.client_set.count }} / {{ course.capacity}} students </h4>
+                {% else %}
+                    <h4>Class is full</h4>
+                {% endif %}
+             </div>
+        </div>
+        <br>
+         <div class="row">
+            <div class="col-sm-8 col-lg-8 ">
+                <div class="detail-image-div">
+                    <img class="detail-image" src="http://res.cloudinary.com/doeaevze5/image/upload/w_1500,h_1500,c_limit,f_auto/{{ course.image}}.jpg"></img>
+                </div>
+                <br>
+                <h3>Class Description</h3>
+                <p>{{ course.description }}</p><br>
+                {% if course.client_set.count < course.capacity %}
+                <a href='/portal/{{organisation}}/student_register/{{course.id}}/' class="btn btn-primary btn-sm" role="button">Enroll</a>
+                {% endif %}
+            </div><!--- col --->
+            <div class="col-sm-4 col-lg-4">
+                <div class='shadow'>
+                    <h3>Class Details</h3><br>
+                    <h5>TEACHER</h5>
+                    <p>{{course.teacher}}</p>
+                    <h5>TIME</h5>
+                    <p>{{ course.start_time}} - {{ course.end_time}}</p>
+                    <h5>DATE</h5>
+                    <p>{{ course.start_date}} - {{ course.end_date}}</p>
+                    <h5>PRICE</h5>
+                    <p>{{ course.price}}$</p>
+                    <hr>
+                    <h3>Contact Details</h3><br>
+                    <h5>ORGANISATION</h5>
+                    <p>{{ course.organisation_name }}</p>
+                    <h5>ADDRESS</h5>
+                    <p>{{ course.address }}</p>
+                    <h5>CITY</h5>
+                    <p>{{ course.city }}</p>
+                    <h5>PHONE</h5>
+                    <p>{{ course.phone_number}}</p>
+                    <h5>EMAIL</h5>
+                    <p>{{ course.email }}</p>
+                </div>
+            </div>    
+        </div><!--- row --->
+    </div><!--- container fluid --->
 {% endblock %}

@@ -1,8 +1,19 @@
 {% extends "profile.html" %}
 
 {% block content%}
-    <h1>{{ student.name }}</h1>
-    <p>{{ student.class }}</p>
+    <div class="panel panel-default">
+        <div class="panel-heading"><h2>Student Information</h2></div>
+        
+        <div class="panel-body box">
+            <ul>
+                <li><h3> Name: {{student.name}}</h3></li>
+                <li><h3> Age: {{student.age}}</h3></li>
+                <li><h3> Email: {{student.email}}</h3></li>
+                <li><h3> Phone: {{student.phone}}</h3></li>
+            </ul>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-success" onclick="location.href='/manager/update_student/{{student.id}}'">Update student</button>
+    <button type="submit" class="btn btn-danger" onclick="location.href='/manager/delete_student/{{student.id}}'">Delete student</button>
     
-    <button type="submit" class="btn btn-success" onclick="location.href='/manager/delete_student/{{student.id}}'">Delete student</button>
 {% endblock %}

@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
@@ -29,6 +28,7 @@ ALLOWED_HOSTS = []
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
+
 # Application definition
 INSTALLED_APPS = [
     'manager.apps.ManagerConfig',
@@ -38,8 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrap3',
+    'crispy_forms',
     'portal',
     'stripe',
+    'jquery',
+    'cloudinary',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -58,7 +62,7 @@ ROOT_URLCONF = 'polar_river.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -121,14 +125,27 @@ STATIC_URL = '/static/'
 STATIC_DIRS = os.path.join(BASE_DIR, 'static')
 STATIC_ROOT = os.path.join(os.path.join(BASE_DIR), 'static_cnd')
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 #stripe stuff
 
 
-#test keys
+#test keys STRIPE
 STRIPE_PUBLISHABLE_KEY='pk_test_G01djmU2D5jvXvCJHmFFKlkE'
 STRIPE_SECRET_KEY='sk_test_AgT7sGBgYum4cz1dr6H2BrNn'
 
 #live keys
 #STRIPE_PUBLISHABLE_KEY='pk_live_vium380MLu9jaHXM4cZkIk4f'
 #STRIPE_SECRET_KEY='sk_live_vwAM1kTbuDiQR0tUbjHX4ezS'
+
+#crispy forms
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+
+#email settings
+EMAIL_HOST = 'smtp.gmail.com' # mail service smtp
+EMAIL_HOST_USER = 'carrelafontaine@gmail.com' # email id
+EMAIL_HOST_PASSWORD = 'wildwind22' #password
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

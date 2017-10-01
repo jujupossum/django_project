@@ -1,26 +1,39 @@
 {% extends "profile.html" %}
 
 {% block content%}
-    <div class='container-fluid'>
-        
-            <table>
-            <tr>
-                <th>Classroom name</th>
-                <th>Classroom location</th>
-            
-              </tr>
-                {% for classroom in object_list %}
-              <tr>
-                <td><a href="/manager/classroom_detail/{{classroom.id}}">{{ classroom.name }}</a></td>
-                <td><a href="/manager/classroom_detail/{{classroom.id}}">{{ classroom.location }}</a></td>
-              </tr>
-                {% endfor %}
-            </table>
-            
-        <br>
-        <div>
-             <button type="submit" class="btn btn-success" onclick="location.href='/manager/create_classroom/'">Create a class room</button>
-        </div>
-        
+<div class='container-fluid'>
+  <div class="row">
+    <div class="col-sm-12 col-md-12  ui-widget">
+      <h4>Filter</h4>
     </div>
+    <form action="/manager/student_list/" method="get">
+    <div class="col-sm-4 col-md-4  ui-widget">
+      <input id="name"  class="form-control" name="name" placeholder="Name" >
+    </div>
+    <div class="col-sm-4 col-md-4 ui-widget">
+      <input id="course"  class="form-control" name='course' type="text" size="50" placeholder="Class">
+    </div>
+    <br>
+    <input type="submit" class="btn btn-success"  value="Filter">
+    </form>
+  </div>
+  <br>
+  <hr>
+  <table>
+    <tr>
+      <th>Classroom name</th>
+      <th>Classroom location</th>
+    </tr>
+    {% for classroom in classrooms %}
+    <tr>
+      <td><a href="/manager/classroom_detail/{{classroom.id}}">{{ classroom.name }}</a></td>
+      <td><a href="/manager/classroom_detail/{{classroom.id}}">{{ classroom.location }}</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+  <br>
+  <div>
+    <button type="submit" class="btn btn-success" onclick="location.href='/manager/create_classroom/'">Create a class room</button>
+  </div>
+</div>
 {% endblock %}

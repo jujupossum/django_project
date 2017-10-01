@@ -1,35 +1,45 @@
 {% extends "profile.html" %}
 
 {% block content%}
-
-    <div class='container-fluid'>
-        
-            <table>
-            <tr>
-                <th>Name</th>
-                <th>Classroom</th>
-                <th>Teacher</th>
-                <th>Day</th>
-                <th>Capacity</th>
-            
-              </tr>
-                {% for class in object_list %}
-              <tr>
-                <td><a href="/manager/class_detail/{{class.id}}">{{ class.name }}</a></td>
-                <td><a href="/manager/class_detail/{{class.id}}">{{ class.class_room }}</a></td>
-                <td><a href="/manager/class_detail/{{class.id}}">{{ class.teacher }}</a></td>
-                <td><a href="/manager/class_detail/{{class.id}}">{{ class.day }}</a></td>
-                <td><a href="/manager/class_detail/{{class.id}}">{{ class.capacity }}</a></td>
-              </tr>
-                {% endfor %}
-            </table>
-            
-        <br>
-        <div>
-             <button type="submit" class="btn btn-success" onclick="location.href='/manager/create_class/'">Create a class </button>
-        </div>
-        
+<div class='container-fluid'>
+ <div class="row">
+    <div class="col-sm-12 col-md-12  ui-widget">
+      <h4>Filter</h4>
     </div>
+    <form action="/manager/student_list/" method="get">
+    <div class="col-sm-4 col-md-4  ui-widget">
+      <input id="name"  class="form-control" name="name" placeholder="Name" >
+    </div>
+    <div class="col-sm-4 col-md-4 ui-widget">
+      <input id="course"  class="form-control" name='course' type="text" size="50" placeholder="Class">
+    </div>
+    <br>
+    <input type="submit" class="btn btn-success"  value="Filter">
+    </form>
+  </div>
+ <br>
+ <hr>       
+ <table>
+    <tr class='table-title-green'>
+      <th>Name</th>
+      <th>Teacher</th>
+      <th>Capacity</th>
+      <th>Price</th>
+    </tr>
+    {% for class in classes %}
+    <tr>
+      <td><a href="/manager/class_detail/{{class.id}}">{{ class.name }}</a></td>
+      <td>{{ class.teacher }}</td>
+      <td>{{ class.capacity }}</td>
+      <td>{{ class.price }}$</td>
+    </tr>
+    {% endfor %}
+    </table>
+    <br>
+    <div>
+      <button type="submit" class="btn btn-success" onclick="location.href='/manager/create_class/'">Create a class </button>
+    </div>
+ </div>       
 {% endblock %}
 
 

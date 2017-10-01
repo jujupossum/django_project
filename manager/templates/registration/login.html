@@ -1,15 +1,29 @@
-{% extends 'base.html' %}
+{% extends 'profilebase.html' %}
 
-{% block title %}Login{% endblock %}
-
+{% block navbar %}
+    <nav class="navbar navbar-default"  data-spy="affix">
+    <div class="container-fluid" >
+      <div class="navbar-header" >
+      </div>
+      <ul class="nav navbar-nav">
+        <li class=""><a href="/">Home</a></li>
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/manager/staff_login">Organisation Login</a></li>
+      </ul>
+    </div>
+  </nav>
+{% endblock %}
 {% block content %}
+
+  
     <div class="container p-none">
         <div class="lgn-container col-lg-8">
             {% if error_message %}
                 <p><strong>{{ error_message }}</strong></p>
             {% endif %}
-            <form id="login-form" method="post" action="{% url 'login_staff' %}">
-                {% csrf_token %}
+            <form id="login-form" method="post" action="{% url 'login_staff' %}">{% csrf_token %}
                 <div>
                     <div>
                         <label for="id_username">Username</label><br>
@@ -25,8 +39,8 @@
                         <input type="hidden" name="next" value="{{ next }}"/>
                     </div>
                 </div>
-                
             </form>
         </div>
     </div>
 {% endblock content %}
+

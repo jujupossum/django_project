@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User
 from manager.models import Class, Client, ClientProfile
 from django import forms
-
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout
+from crispy_forms.bootstrap import TabHolder, Tab
 
 class CustomerForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -23,4 +25,15 @@ class StudentForm(forms.ModelForm):
 class StudentProfileForm(forms.ModelForm):
     class Meta:
         model = ClientProfile
-        fields = ['name', 'age', 'phone', 'gender', 'email']
+        fields = ['name','last_name', 'age', 'phone', 'gender', 'email', 'address']
+        
+
+
+class NoFormTagCrispyFormMixin(object):
+    @property
+    def helper(self):
+        if not hasattr(self, '_helper'):
+            self._helper = FormHelper()
+            self._helper.form_tag = False
+        return self._helper
+        

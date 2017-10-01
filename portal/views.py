@@ -1,65 +1,122 @@
 from django.shortcuts import render
 from django.views import generic
-from manager.models import  Class, ClientProfile, Client 
+from manager.models import  Class, ClientProfile, Client, StripeInfo, ClassHistory 
 from django.contrib.auth import login, authenticate, logout
 from .forms import CustomerForm, CustomerEditForm, StudentForm, StudentProfileForm
 from django.shortcuts import render, redirect, get_object_or_404 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
+import datetime
 import stripe
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.apps import AppConfig
+import requests
+from django.contrib.auth.models import User
+from django.utils.decorators import method_decorator
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Count
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-#index view
-def index(request):
-    return render(request, 'portal_index.html')
-
-#login view
+# Index view
+class Index(generic.ListView):
+    template_name= "portal_index.html"
+    
+    def get_queryset(self):
+        return User.objects.filter(groups__name='customer')
+    
+# login view
 def login_user(request):
-    if request.method == "POST":
+    state = "Please log in below..."
+    username = password = ''
+    next = ""
+    if request.GET:  
+        next = request.GET['next']
+
+    if request.POST:
         username = request.POST['username']
         password = request.POST['password']
+
         user = authenticate(username=username, password=password)
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return redirect('/portal/customer_profile', )
+                state = "You're successfully logged in!"
+                if next == "":
+                    return HttpResponseRedirect('/portal/default/class_list')
+                else:
+                    return HttpResponseRedirect(next)
             else:
-                return redirect('/portal/customer_login', )
+                state = "Your account is not active, please contact the site admin."
         else:
-            return redirect('/portal/customer_login', )
-    return render(request, 'registration/customer_login.html')
+            state = "Your username and/or password were incorrect."
+
+    return render_to_response(
+        'registration/customer_login.html',
+        {
+        'state':state,
+        'username': username,
+        'next':next,
+        },
+        context_instance=RequestContext(request)
+    )
     
-#Logout view
+# Logout view
 def logout_user(request):
     logout(request)
     return redirect('/portal/customer_login')
 
-#Create your views here.
-class ClassListView(generic.ListView):
-    template_name= "customer_class/class_list.html"
-    
-    def get_queryset(self):
-        return Class.objects.all()
-
-#detail view for students
+# Class list view 
 @login_required(login_url='/portal/customer_login/')
-def class_detail(request, class_id):
+def classList(request, organisation):
+    name = ''
+    
+    if request.GET:
+        name = request.GET['name']    
+    
+    organisation= organisation;
+    template_name= "customer_class/class_list.html"
+    classes = Class.objects.filter(organisation_name = organisation)
+    
+    if name is not None and name != '':
+        classes = classes.filter(name__icontains=name)
+
+    context={
+    'organisation':organisation,
+    'classes':classes,
+    }
+    return render(request, template_name, context)
+
+# Detail view for classes
+def class_detail(request, class_id, organisation):
     course = get_object_or_404(Class, pk=class_id)
-    students = ClientProfile.objects.filter(user=request.user)
+    context={
+        'course':course,
+        'organisation': organisation,
+    }
+    return render(request, 'customer_class/class_detail.html', context)        
 
-    return render(request, 'customer_class/class_detail.html', {'course' : course, 'students':students})        
+# Class history
+@login_required(login_url='/portal/customer_login/')
+def class_history(request):
+    classes = ClassHistory.objects.filter(user = request.user)
+    return render(request, 'customer_class/class_history.html', {'classes':classes})
 
-#Customer profile
+# Customer profile
 @login_required(login_url='/portal/customer_login/')
 def customer_profile(request):
     return render(request, 'customer/customer_profile.html')
 
-#Registration for customers
+# Registration for customers
 def register(request):
+     
+    if request.GET:  
+        next = request.GET['next']
+    
     form = CustomerForm(request.POST or None)
     if form.is_valid():
         user = form.save(commit=False)
@@ -73,43 +130,54 @@ def register(request):
                 group = Group.objects.get_or_create(name='customer')[0] 
                 user.groups.add(group)
                 login(request, user)
-                return redirect('customer_profile', )
+                if next == "":
+                    return HttpResponseRedirect('/customer_profile/')
+                else:
+                    return HttpResponseRedirect(next)
     context = {
         "form": form,
     }
     return render(request, 'registration/register.html', context)
     
-#create a student profile    
+# Register student information before payment  
 @login_required(login_url='/portal/customer_login/')
-def create_student(request):
+def create_student_profile(request, organisation, class_id):
+    course = get_object_or_404(Class, pk=class_id)
     form = StudentProfileForm(request.POST or None)
     if form.is_valid():
         student = form.save(commit=False)
         student.user = request.user
+        student.organisation = organisation
+        student.course_id = class_id
         student = form.save()
-        return redirect('customer_profile')
-        #return render(request, 'registration/checkout.html', {'student': student, 'course':course})
+        return redirect( 'checkout')
     context ={
         'form':form,
+        'course':course
     }
-    return render(request, 'student/create_student.html', context)
+    return render(request, 'customer_student/create_student.html', context)
     
-#credit card processing   
-def checkout(request, class_id, student_id):
-    course = get_object_or_404(Class, pk=class_id)
-    student = get_object_or_404(ClientProfile, pk=student_id)
+# Credit card processing   
+def checkout(request):
+    student = get_object_or_404(ClientProfile, user = request.user)
+    course = get_object_or_404(Class, pk=student.course_id, organisation_name = student.organisation)
     publishKey = settings.STRIPE_PUBLISHABLE_KEY
+    stripe_info = get_object_or_404(StripeInfo, business_name = student.organisation)
+    current_user = request.user
+    
     if request.method == 'POST':
         token = request.POST['stripeToken']
         try:
         # Use Stripe's library to make requests...
         # Charge the user's card:
             charge = stripe.Charge.create(
-                amount=1500,
+                amount=course.price,
                 currency="cad",
                 description="Example charge",
                 receipt_email= "magnejulien@hotmail.com",
                 source=token,
+                application_fee=123,
+                stripe_account=stripe_info.stripe_user_id,
             )
             pass
         except stripe.error.CardError as e:
@@ -143,10 +211,71 @@ def checkout(request, class_id, student_id):
             # Something else happened, completely unrelated to Stripe
             pass
         else:
-            #make copy of student profile if no errors
-            u = Client.objects.create(course=course, name=student.name, age=student.age, phone=student.phone, gender=student.gender, email=student.email)
+            # Make copy of student profile if no errors and add to client database
+            u = Client.objects.create(course=course, organisation_name=course.organisation_name, name=student.name, age=student.age, phone=student.phone, gender=student.gender, email=student.email, address = student.address)
             u.save()
-    context = {'publishKey': publishKey}
+            j = ClassHistory.objects.create(user = current_user ,class_name = course.name, registered_date = datetime.datetime.now(), organisation_name = course.organisation_name, 
+            name = course.name, teacher = course.teacher, start_time = course.start_time, end_time = course.end_time, start_date = course.start_date, end_date = course.end_date, description = course.description,
+            price = course.price, image = course.image, address = course.address, phone_number = course.phone_number            
+            )
+            j.save()
+            return render(request, 'customer_class/class_history.html')            
+    context = {'publishKey': publishKey,
+               'course' : course,
+               'student': student
+    }
     template = 'registration/checkout.html'
     return render(request, template, context)
     
+
+#filter class objects         
+def search(request):
+    text=''
+    city=''
+    errors = []
+    if 'text' in request.GET:
+        text = request.GET['text']
+        city = request.GET['city']
+        if text is not None and text != '': 
+            class_list = Class.objects.filter(
+                name__icontains=text
+            ).filter(
+                address__icontains=city
+            )
+            query = "text: %s, city: %s" % (text, city)
+            #--------------------PAGINATOR------------------------------------
+            paginator = Paginator(class_list, 12) # Show 25 contacts per page
+
+            page = request.GET.get('page')
+            try:
+                classes = paginator.page(page)
+            except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+                classes = paginator.page(1)
+            except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+                classes = paginator.page(paginator.num_pages)
+            context ={'classes': classes, 'query': query, 'city':city, 'text':text}    
+            return render_to_response('customer_class/class_search.html', context)
+        
+        
+        else:
+            class_list = Class.objects.filter(address__icontains=city)
+            query = "text: %s, city: %s" % (text, city)
+            #--------------------PAGINATOR------------------------------------
+            paginator = Paginator(class_list, 12) # Show 25 contacts per page
+
+            page = request.GET.get('page')
+            try:
+                classes = paginator.page(page)
+            except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+                classes = paginator.page(1)
+            except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+                classes = paginator.page(paginator.num_pages)
+            context ={'classes': classes, 'query': query, 'city':city, 'text':text}
+            return render_to_response('customer_class/class_search.html',context)
+            
+    return render_to_response('customer_class/class_search.html',
+            {'errors': errors})        

@@ -1,16 +1,44 @@
-{% extends "profilebase.html" %}
+{% extends 'profilebase.html' %}
 
-{% block content%}
-    <div class='container-fluid'>
-        {% for class in object_list %}
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <h3><a href="/portal/class_detail/{{class.id}}">{{ class.name }}</a></h3>
-                    <p>{{ class.description }}</p>
-                </div>
-            </div>
-        {% endfor %}
+{% block content %}
+<div class="albums-container container-fluid">
+
+    <div class="row">
+    <div class="col-sm-12 col-md-12  ui-widget">
+    <h3>Search for a class</h3>
     </div>
+    <form action="/portal/{{organisation}}/class_list/" method="get">
+    <div class="col-sm-4 col-md-4  ui-widget">
+      <input id="name"  class="form-control" name="name">
+    </div>
+    
+    <br>
+    <input type="submit" class="btn btn-success"  value="Search">
+  </form>
+  </div>
+    <hr>
+    <!-- Classes -->
+    <div class="row">
+            {% for class in classes %}
+                <div class="col-sm-4 col-md-4 col-lg-4">
+                    <div class="thumbnail">
+                        <a href="/portal/{{ organisation }}/class_detail/{{class.id}}">
+                             {% load cloudinary %}      
+                             {% cloudinary class.image format="jpg" width=250 height=250 crop="fill" %}
+                        </a>
+                        <div class="caption">
+                            <h3>{{ class.name }}</h3>
+                            <h4> {{ class.start_date }} - {{ class.end_date }}</h4>
+                            <!-- View Details -->
+                            <a href="/portal/{{ organisation }}/class_detail/{{class.id}}" class="btn btn-primary btn-sm" role="button">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                {% cycle '' '' '' '' '' '<div class="clearfix visible-lg"></div>' %}
+            {% endfor %}
+    </div>
+
+  
+
+</div>
 {% endblock %}
-
-
